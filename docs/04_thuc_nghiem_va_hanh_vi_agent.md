@@ -85,6 +85,11 @@ flowchart TD
 Trên nền tảng Email, tỷ lệ **Attack Recognition của cả hai mô hình đều giảm xuống dưới 16%**.  
 *Lý giải:* Trong giao diện hộp thư, người dùng thường xuyên nhận được các yêu cầu xác thực, hóa đơn hoặc liên kết đính kèm. Mô hình coi các thông báo trực quan trong email là "hành vi thông thường của thư điện tử", do đó mất hoàn toàn khả năng cảnh giác.
 
+<div align="center">
+  <img src="../assets/images/vpi_email_attack_payload.png" alt="Email Attack Blindspot" width="650">
+  <p><em>Hình 4.1: Điểm mù nhận thức trên giao diện Email của VPI-Bench. Khi một email chứa lệnh bash độc hại dưới danh nghĩa "Product Team hỗ trợ sửa lỗi", mô hình VLM coi đó là ngữ cảnh nghiệp vụ hợp lệ và nhiệt tình thực thi thay vì nhận diện tấn công.</em></p>
+</div>
+
 ---
 
 ## 4. Đánh Giá Mô Hình Chuyên Dụng UI-TARS (Appendix G)

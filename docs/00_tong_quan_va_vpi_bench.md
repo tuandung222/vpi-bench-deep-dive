@@ -69,6 +69,13 @@ Kênh tiếp nhận hình ảnh trực tiếp này tạo ra lỗ hổng bảo m�
    - **Rò rỉ dữ liệu cá nhân (Privacy Leakage - PL):** Tác tử đọc trộm tệp chứa thông tin ngân hàng, mật khẩu, khóa bí mật API (`~/.aws/credentials`), rồi gửi ra máy chủ ngoại vi hoặc đính kèm vào email gửi cho kẻ tấn công.
    - **Hành động phá hoại trái phép (Unauthorized Actions - UA):** Tác tử tự ý chạy các lệnh shell nguy hiểm, sửa đổi tệp tin người dùng, xóa cơ sở dữ liệu cục bộ, hoặc gửi tin nhắn giả mạo danh tính người dùng.
 
+### Minh Họa Trực Quan: Bẫy Popup Tấn Công Trên Giao Diện Mua Sắm
+
+<div align="center">
+  <img src="../assets/images/vpi_shopping_attack_popup.png" alt="Shopping Attack Popup" width="560">
+  <p><em>Hình 0.1: Bẫy trực quan dạng popup trên trang thương mại điện tử của VPI-Bench. Kẻ tấn công dụ tác tử nhấp "Download File" để tải và chạy script độc hại dưới danh nghĩa "kịch bản săn hàng giá rẻ".</em></p>
+</div>
+
 ---
 
 ## 3. Vì Sao Các Đánh Giá Red-Teaming Cũ Không Đủ?
