@@ -1,0 +1,82 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "VPI-Bench Multi-Turn Trajectory & Late Injection Workflow",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "full-loop",
+        "label": "End-to-End Trajectory",
+        "focus": ["user_prompt", "agent_brain", "browser_nav", "screen_capture", "vpi_payload", "malicious_action", "os_sink", "judge_eval"],
+        "note": "Follow how an agent receives benign prompt, navigates web, encounters visual injection, and triggers system harms."
+      },
+      {
+        "id": "hijack-path",
+        "label": "Visual Hijack & Evaluation",
+        "focus": ["vpi_payload", "malicious_action", "os_sink", "judge_eval"],
+        "note": "Trace how visual attack prompts divert VLM planning toward unauthorized actions and data exfiltration."
+      }
+    ],
+    "output": "visualizations/vpi-bench-workflow.html"
+  },
+  "lanes": [
+    { "id": "user", "label": "User Specification" },
+    { "id": "agent", "label": "Multimodal CUA Engine" },
+    { "id": "web", "label": "Web Environment & Visuals" },
+    { "id": "system", "label": "OS Execution & Evaluation Sinks" }
+  ],
+  "phases": [
+    { "id": "initiation", "label": "Task Initiation", "fromCol": 0, "toCol": 1 },
+    { "id": "navigation", "label": "Multi-Turn Trajectory", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "exploitation", "label": "Injection & Evaluation", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "agent_loop", "label": "Perception & Planning", "lane": "agent", "fromCol": 1, "toCol": 4, "variant": "emphasis" },
+    { "id": "web_interaction", "label": "Web & Pixel Render", "lane": "web", "fromCol": 2, "toCol": 4, "variant": "default" },
+    { "id": "evaluation_sinks", "label": "Sink Verification", "lane": "system", "fromCol": 4, "toCol": 5, "variant": "security" }
+  ],
+  "mainPath": ["user_prompt", "agent_brain", "browser_nav", "screen_capture", "vpi_payload", "malicious_action", "os_sink"],
+  "nodes": [
+    { "id": "user_prompt", "lane": "user", "col": 0, "type": "external", "label": "Benign User Prompt", "sublabel": "T_benign goal", "width": 140 },
+    { "id": "agent_brain", "lane": "agent", "col": 1, "type": "backend", "label": "Multimodal VLM", "sublabel": "reasoning & tools", "tag": "Vision-Language", "width": 140 },
+    { "id": "browser_nav", "lane": "web", "col": 2, "type": "frontend", "label": "Browser Interaction", "sublabel": "click, scroll, type", "width": 140 },
+    { "id": "screen_capture", "lane": "web", "col": 3, "type": "frontend", "label": "Screenshot I_t", "sublabel": "pixel observation", "tag": "raw pixels", "width": 140 },
+    { "id": "vpi_payload", "lane": "web", "col": 4, "type": "security", "label": "Visual Attack Prompt", "sublabel": "v^adv in popup/chat", "tag": "Late/Early VPI", "width": 140 },
+    { "id": "malicious_action", "lane": "agent", "col": 4, "type": "backend", "label": "Hijacked Action", "sublabel": "cat /etc/passwd / rm", "width": 140 },
+    { "id": "os_sink", "lane": "system", "col": 4, "type": "database", "label": "OS & Network Sinks", "sublabel": "fs diff / egress trap", "tag": "UA + PL Harm", "width": 140 },
+    { "id": "judge_eval", "lane": "system", "col": 5, "type": "cloud", "label": "Tri-LLM Judge", "sublabel": "Claude/GPT/Gemini", "tag": "98% accuracy", "width": 150 },
+    { "id": "task_result", "lane": "user", "col": 5, "type": "backend", "label": "Final Outcome", "sublabel": "AR & SR recorded", "width": 140 }
+  ],
+  "edges": [
+    { "id": "e_prompt_agent", "from": "user_prompt", "to": "agent_brain", "label": "user intent", "variant": "default" },
+    { "id": "e_agent_browser", "from": "agent_brain", "to": "browser_nav", "label": "action a_t", "variant": "emphasis" },
+    { "id": "e_browser_screen", "from": "browser_nav", "to": "screen_capture", "variant": "default" },
+    { "id": "e_screen_agent", "from": "screen_capture", "to": "agent_brain", "label": "observe I_t", "variant": "dashed" },
+    { "id": "e_screen_vpi", "from": "screen_capture", "to": "vpi_payload", "label": "encounter payload", "variant": "security" },
+    { "id": "e_vpi_hijack", "from": "vpi_payload", "to": "malicious_action", "label": "hijack plan", "variant": "security" },
+    { "id": "e_action_sink", "from": "malicious_action", "to": "os_sink", "label": "execute harm", "variant": "security" },
+    { "id": "e_sink_judge", "from": "os_sink", "to": "judge_eval", "label": "trace & state diff", "variant": "emphasis" },
+    { "id": "e_judge_result", "from": "judge_eval", "to": "task_result", "variant": "default" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Multi-Turn Trajectory Dynamics",
+      "items": [
+        "Agents iteratively capture screenshots I_t and issue mouse/keyboard/shell actions",
+        "Visual injection appears opportunistically at early (t=1) or late (t>=3) stages"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Dual-Layer Safety Audit",
+      "items": [
+        "OS filesystem diff and network egress catch physical unauthorized actions & data leaks",
+        "Tri-LLM Majority Voting evaluates reasoning trace achieving 98% attempted accuracy"
+      ]
+    }
+  ]
+}

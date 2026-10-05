@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "VPI-Bench Threat Model & Sandbox Architecture",
+    "quality_profile": "showcase",
+    "viewBox": [960, 540],
+    "views": [
+      {
+        "id": "full-architecture",
+        "label": "Threat & Sandbox Flow",
+        "focus": ["user_spec", "agent_runtime", "screen_obs", "web_platform", "attacker_prompt", "docker_sandbox", "filesystem_trap", "network_egress", "tri_judge"],
+        "note": "Overview of how visual prompt injections penetrate agent perception and escalate into system-level harms."
+      },
+      {
+        "id": "sandbox-sinks",
+        "label": "Execution & Sinks",
+        "focus": ["docker_sandbox", "filesystem_trap", "network_egress", "tri_judge"],
+        "note": "Examine filesystem mutations and network exfiltration captured in the controlled evaluation sandbox."
+      }
+    ],
+    "output": "visualizations/vpi-bench-threat-model.html"
+  },
+  "components": [
+    { "id": "user_spec", "type": "external", "label": "User Task", "sublabel": "T_benign goal", "pos": [38, 140], "size": [138, 68] },
+    { "id": "agent_runtime", "type": "backend", "label": "Multimodal CUA", "sublabel": "VLM reasoning", "pos": [220, 140], "size": [138, 68] },
+    { "id": "screen_obs", "type": "frontend", "label": "Screen Observer", "sublabel": "Screenshot I_t", "pos": [402, 140], "size": [138, 68] },
+    { "id": "web_platform", "type": "frontend", "label": "Pseudo Webpage", "sublabel": "Synthetic site", "pos": [584, 140], "size": [138, 68] },
+    { "id": "attacker_prompt", "type": "security", "label": "Visual Attack", "sublabel": "Embedded v^adv", "pos": [766, 140], "size": [138, 68] },
+    { "id": "docker_sandbox", "type": "backend", "label": "Docker Sandbox", "sublabel": "Ubuntu CLI & OS", "brand": "docker", "pos": [220, 340], "size": [138, 68] },
+    { "id": "filesystem_trap", "type": "database", "label": "Filesystem Trap", "sublabel": "Local mock files", "pos": [402, 340], "size": [138, 68] },
+    { "id": "network_egress", "type": "cloud", "label": "Network Sinks", "sublabel": "Data egress trap", "pos": [584, 340], "size": [138, 68] },
+    { "id": "tri_judge", "type": "cloud", "label": "Tri-LLM Judge", "sublabel": "Majority voting", "pos": [766, 340], "size": [138, 68] }
+  ],
+  "connections": [
+    { "id": "c_user_agent", "from": "user_spec", "to": "agent_runtime", "label": "benign prompt", "labelDy": -28 },
+    { "id": "c_screen_agent", "from": "screen_obs", "to": "agent_runtime", "label": "raw pixels", "labelAt": [380, 222], "variant": "dashed" },
+    { "id": "c_web_screen", "from": "web_platform", "to": "screen_obs", "label": "render UI", "labelDy": -28 },
+    { "id": "c_attacker_web", "from": "attacker_prompt", "to": "web_platform", "label": "injects payload", "labelDy": -28, "variant": "security" },
+    { "id": "c_agent_docker", "from": "agent_runtime", "to": "docker_sandbox", "label": "OS tool calls", "labelDy": 24, "labelDx": 44, "variant": "emphasis" },
+    { "id": "c_docker_fs", "from": "docker_sandbox", "to": "filesystem_trap", "label": "file modify/rm", "labelDy": -28, "variant": "emphasis" },
+    { "id": "c_fs_net", "from": "filesystem_trap", "to": "network_egress", "label": "exfil data", "labelDy": -28, "variant": "security" },
+    { "id": "c_net_judge", "from": "network_egress", "to": "tri_judge", "label": "audit sinks", "labelDy": -28, "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Threat Model Components",
+      "items": [
+        "Adversaries opportunistically inject visual prompts into public web surfaces",
+        "VLM agents mistake injected visual tasks for legitimate subgoals of user intent"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Dual Evidence Evaluation",
+      "items": [
+        "Sandbox filesystem and network traps capture concrete unauthorized mutations",
+        "Frontier LLM panel evaluates trajectory logs against human-verified standards"
+      ]
+    }
+  ]
+}
